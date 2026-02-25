@@ -4,31 +4,110 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Jay Lee | Robotics Portfolio</title>
+
   <style>
-    body { font-family: Arial, sans-serif; margin: 40px; line-height: 1.6; max-width: 900px; }
-    h1 { margin-bottom: 0; }
-    .subtitle { color: #555; margin-top: 6px; }
-    .card { border: 1px solid #ddd; border-radius: 12px; padding: 16px; margin: 16px 0; }
-    .links a { margin-right: 12px; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+      margin: 60px auto;
+      max-width: 900px;
+      line-height: 1.7;
+      color: #222;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 0;
+    }
+
+    h2 {
+      border-bottom: 1px solid #ddd;
+      padding-bottom: 6px;
+      margin-top: 50px;
+    }
+
+    .subtitle {
+      color: #666;
+      margin-top: 5px;
+      margin-bottom: 20px;
+    }
+
+    .links a {
+      margin-right: 15px;
+      text-decoration: none;
+      color: #0056b3;
+    }
+
+    .links a:hover {
+      text-decoration: underline;
+    }
+
+    .card {
+      border: 1px solid #e5e5e5;
+      border-radius: 8px;
+      padding: 20px;
+      margin-top: 20px;
+      transition: 0.2s ease;
+    }
+
+    .card:hover {
+      border-color: #999;
+    }
+
+    a {
+      color: #0056b3;
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
   </style>
 </head>
-<body>
-  <h1>Jay Lee</h1>
-  <div class="subtitle">MSE Robotics @ Johns Hopkins | Controls • Medical Robotics • Estimation</div>
 
-  <p class="links">
+<body>
+
+  <h1>Yu-Chieh (Jay) Lee</h1>
+  <div class="subtitle">
+    MSE Robotics @ Johns Hopkins University | Controls • Estimation • Medical Robotics
+  </div>
+
+  <div class="links">
     <a href="https://github.com/YOURUSERNAME">GitHub</a>
     <a href="mailto:YOUR_EMAIL">Email</a>
     <a href="YOUR_LINKEDIN_URL">LinkedIn</a>
+  </div>
+
+  <h2>About</h2>
+  <p>
+    I am a Master's student in Robotics at Johns Hopkins University with a focus on 
+    control systems and medical robotics. My work includes 
+    Kalman filtering under variable sampling intervals, empirical noise modeling, 
+    encoder signal processing, and teleoperation systems for surgical platforms.
   </p>
+
+  <h2>Education</h2>
+
+  <div class="card">
+    <h3>Johns Hopkins University</h3>
+    <p><strong>MSE in Robotics</strong> | 2025–Present</p>
+  </div>
+
+  <div class="card">
+    <h3>University of Illinois Urbana-Champaign</h3>
+    <p><strong>B.S. in Systems Engineering & Design</strong> | 2021–2025</p>
+    <p>GPA: 3.9 / 4.0</p>
+  </div>
 
   <h2>Projects</h2>
 
   <div class="card">
-    <h3>Offline Velocity Estimation (Savitzky–Golay + Kalman Filter)</h3>
+    <h3>Offline Velocity Estimation Using Savitzky–Golay Smoothing and Kalman Filtering</h3>
     <p>
-      Built an offline state-estimation pipeline for encoder-derived motion signals under variable sampling intervals,
-      including empirical noise characterization and correlated covariance tuning.
+      Designed an offline state-estimation pipeline to improve encoder-derived 
+      velocity estimates under variable sampling intervals. Constructed empirical 
+      correlated covariance models and evaluated estimation accuracy against 
+      reference signals.
     </p>
     <p>
       <a href="projects/velocity-estimation.html">Read more →</a>
@@ -36,14 +115,14 @@
   </div>
 
   <div class="card">
-    <h3>Teleoperation Control of Eye Robot (SHER 2.1) + Eye Snake (I2RIS)</h3>
+    <h3>Teleoperation Control of Eye Robot (SHER 2.1) & Eye Snake (I2RIS)</h3>
     <p>
-      Project work focused on controls, system understanding, and experimentation in surgical robotics.
+      Project work focused on system understanding, control implementation, 
+      and experimental evaluation within a surgical robotics framework.
     </p>
     <p>
       <a href="projects/teleop-eye-robot.html">Read more →</a>
     </p>
   </div>
-
 </body>
 </html>
