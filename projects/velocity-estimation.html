@@ -15,7 +15,7 @@
     }
     h1 { font-size: 2.2rem; margin-bottom: 0; }
     .subtitle { color: #666; margin-top: 6px; margin-bottom: 22px; }
-    h2 { border-bottom: 1px solid #ddd; padding-bottom: 6px; margin-top: 40px; }
+    h2 { border-bottom: 1px solid #ddd; padding-bottom: 6px; margin-top: 42px; }
     .tagrow span {
       display: inline-block;
       border: 1px solid #e5e5e5;
@@ -35,6 +35,8 @@
     a { color: #0056b3; text-decoration: none; }
     a:hover { text-decoration: underline; }
     ul { margin-top: 8px; }
+    code, pre { background: #fafafa; border: 1px solid #eee; border-radius: 8px; }
+    pre { padding: 12px 14px; overflow-x: auto; }
     .muted { color: #666; }
     .back { margin-bottom: 18px; display: inline-block; }
   </style>
@@ -44,92 +46,123 @@
 
   <a class="back" href="../index.html">← Back to Home</a>
 
-  <h1>Offline Velocity Estimation Using Savitzky–Golay Smoothing and Kalman Filtering</h1>
+  <h1>Offline Velocity Estimation Using Savitzky–Golay Smoothing and a Kalman Filter with Acceleration Input</h1>
   <div class="subtitle">
-    Signal Processing • Digital Control Context • Robotics Sensing (Encoder Quantization) • Evaluation & Tuning
+    Controls / Signal Processing • Variable Δt Discrete-Time Modeling • Encoder Noise • Offline Evaluation
   </div>
 
   <div class="tagrow">
-    <span>Controls / Estimation</span>
+    <span>Digital Control Context</span>
     <span>Signal Processing</span>
+    <span>Kalman Filtering</span>
     <span>Variable Δt</span>
-    <span>Encoder Noise</span>
-    <span>Evaluation</span>
+    <span>Noise Modeling</span>
   </div>
 
   <h2>Overview</h2>
   <p>
-    This project focused on improving velocity estimates derived from encoder measurements for a precision robotic system.
-    In practice, naive differentiation amplifies quantization noise and sampling irregularities, especially at low speeds.
-    I built an offline pipeline combining Savitzky–Golay smoothing and a Kalman filter (with empirically tuned noise models)
-    to produce more reliable velocity estimates for downstream control and analysis.
+    This project improves encoder-derived velocity estimates using an offline pipeline that combines
+    Savitzky–Golay (SG) smoothing with a discrete-time Kalman filter (KF).
+    The main challenge is that quantization and differentiation amplify noise, especially at low velocities.
+    The final estimator treats measured acceleration as an external input to a position–velocity KF
+    and evaluates performance against provided reference signals.
   </p>
 
   <div class="card">
-    <strong>My role</strong>
+    <strong>What I did</strong>
     <ul>
-      <li>Designed and implemented the offline estimation pipeline (smoothing + filtering).</li>
-      <li>Characterized measurement noise and built covariance models (including correlated noise).</li>
-      <li>Evaluated error patterns vs. velocity and diagnosed low-speed quantization effects.</li>
+      <li>Applied a 5-point quadratic Savitzky–Golay smoother to measured signals to reduce high-frequency noise.</li>
+      <li>Implemented a discrete-time KF with states <em>[position, velocity]</em>, using measured acceleration as an input.</li>
+      <li>Handled non-constant sampling by updating the state transition each step using measured Δt.</li>
+      <li>Estimated empirical noise statistics and used correlated measurement covariance for tuning.</li>
+      <li>Evaluated filtered estimates vs. reference position/velocity and analyzed error behavior.</li>
     </ul>
     <p class="muted">
-      Note: Some implementation details and datasets are not shared publicly due to course/lab constraints.
+      Some code/data are not shared publicly due to course/lab constraints, but the full technical report is available below.
     </p>
   </div>
 
   <h2>Problem</h2>
   <ul>
-    <li><strong>Low-speed quantization:</strong> encoder resolution leads to “stair-step” position signals and noisy velocity after differentiation.</li>
-    <li><strong>Irregular sampling:</strong> real logs may have variable Δt, which complicates discrete-time filtering assumptions.</li>
-    <li><strong>Noise coupling:</strong> measurement channels can be correlated (e.g., position/velocity/acceleration estimates derived from the same signal).</li>
+    <li><strong>Quantization + differentiation:</strong> encoder position is “stair-stepped,” and taking derivatives amplifies noise at low speed.</li>
+    <li><strong>Variable sampling:</strong> the dataset time column is real time in seconds, but Δt varies slightly from sample to sample.</li>
+    <li><strong>Robustness:</strong> acceleration can change abruptly, which can break constant-acceleration model assumptions.</li>
   </ul>
 
-  <h2>Approach</h2>
+  <h2>Dataset & Evaluation Setup</h2>
+  <p>
+    The dataset provides measured signals (mpos, mvel, maccel) and reference signals (rpos, rvel, raccel).
+    Reference signals are used only for offline evaluation, not for filtering.
+    Measurement errors are defined as (measured − reference), and estimation errors use (KF estimate − reference).
+  </p>
+
+  <h2>Method</h2>
+
   <div class="card">
-    <strong>1) Preprocessing with Savitzky–Golay</strong>
-    <ul>
-      <li>Applied Savitzky–Golay smoothing to reduce quantization noise while preserving motion features.</li>
-      <li>Computed derivative signals (velocity/acceleration) from the smoothed fit where appropriate.</li>
-    </ul>
+    <strong>1) Savitzky–Golay smoothing (5-point quadratic)</strong>
+    <p>
+      A symmetric 5-sample quadratic SG smoother is applied independently to the measured position, velocity, and acceleration.
+      The convolution kernel is:
+    </p>
+    <pre><code>c = (1/35) * [-3, 12, 17, 12, -3]</code></pre>
+    <p class="muted">
+      (Derived from a local least-squares quadratic fit over i ∈ {-2,-1,0,1,2}.)
+    </p>
   </div>
 
   <div class="card">
-    <strong>2) Discrete-time Kalman filter with practical timing</strong>
-    <ul>
-      <li>Used a state-space formulation suitable for motion signals (position/velocity/acceleration variants depending on configuration).</li>
-      <li>Handled variable sampling intervals by updating the discrete-time model using the measured Δt between samples.</li>
-      <li>Tuned process/measurement noise using empirical statistics from measured vs. reference signals.</li>
-    </ul>
+    <strong>2) Kalman filter with acceleration as external input</strong>
+    <p>
+      State: xₖ = [pₖ, vₖ]ᵀ. The model updates at each step using the measured sampling interval Δtₖ.
+    </p>
+    <pre><code>Fₖ = [[1, Δtₖ],
+      [0, 1 ]]
+
+Gₖ = [[0.5 * Δtₖ^2],
+      [      Δtₖ ]]
+
+xₖ₊₁ = Fₖ xₖ + Gₖ aₖ + wₖ
+zₖ   = [mpos(tₖ), mvel(tₖ)]ᵀ = H xₖ + vₖ,  H = I</code></pre>
+    <p class="muted">
+      Key design choice: measured acceleration aₖ is treated as an input rather than an estimated state, improving robustness to abrupt changes.
+    </p>
   </div>
 
   <div class="card">
-    <strong>3) Empirical noise modeling & tuning</strong>
-    <ul>
-      <li>Estimated noise distributions and covariance from data residuals.</li>
-      <li>Tested correlated covariance structures to better reflect real sensor/derivation coupling.</li>
-      <li>Performed sensitivity checks to ensure stable filtering behavior across operating speeds.</li>
-    </ul>
+    <strong>3) Empirical noise modeling (correlated measurement covariance)</strong>
+    <p>
+      Noise statistics are estimated from measured–reference differences. A 3×3 covariance is computed, and the KF uses
+      the position–velocity block as R. Acceleration variance contributes to process noise through Qₖ = Gₖ σ²ₐ,eff Gₖᵀ.
+    </p>
+    <pre><code>R (position–velocity block) =
+[[   1.8556,   -9.8784],
+ [  -9.8784, 1662.6606]]
+
+σ²_a (from empirical covariance) = 987265.9388</code></pre>
   </div>
 
-  <h2>Results (What improved)</h2>
+  <h2>Results Summary</h2>
   <ul>
-    <li><strong>Smoother low-speed velocity:</strong> reduced spiky differentiation artifacts caused by encoder quantization.</li>
-    <li><strong>Better consistency under variable Δt:</strong> filtering remained stable when sampling intervals changed.</li>
-    <li><strong>More interpretable error trends:</strong> error-vs-velocity analysis helped diagnose quantization-dominated regimes.</li>
+    <li><strong>Position:</strong> KF estimate is smoother than measurement while remaining aligned with reference.</li>
+    <li><strong>Velocity:</strong> KF substantially reduces noise and staircase artifacts in measured velocity, especially around low-speed and reversals.</li>
+    <li><strong>Errors:</strong> velocity error variance decreases significantly after filtering; remaining lag appears during aggressive transitions (tuning trade-off).</li>
   </ul>
 
-  <h2>What I learned</h2>
-  <ul>
-    <li>Why low-speed motion is often the hardest regime for encoder-derived velocity (quantization + timing effects).</li>
-    <li>How noise modeling choices (especially correlated noise) can significantly affect Kalman filter behavior.</li>
-    <li>The importance of evaluation plots (e.g., residuals and error-vs-velocity) for debugging estimation pipelines.</li>
-  </ul>
+  <h2>Key Design Insight</h2>
+  <div class="card">
+    <strong>Why “acceleration as input” (not a 3-state constant-accel model)</strong>
+    <p>
+      An initial constant-acceleration state model (p, v, a) performed worse when measured acceleration changed abruptly.
+      Treating acceleration as an external input removed the assumption that acceleration evolves smoothly under a model,
+      improving robustness and velocity estimation performance.
+    </p>
+  </div>
 
-  <h2>Next steps</h2>
+  <h2>Next Steps</h2>
   <ul>
-    <li>Compare fixed-window smoothing vs. adaptive approaches based on speed/acceleration regimes.</li>
-    <li>Explore alternative estimators (e.g., complementary filters, fixed-lag smoothers) for offline analysis.</li>
-    <li>Package a “sanitized” demo with synthetic data to share code publicly without restrictions.</li>
+    <li>Apply SG only to position, then compute velocity/acceleration analytically from the fitted polynomial for derivative consistency.</li>
+    <li>Improve noise modeling via analytical noise propagation (position → velocity/acceleration) to better explain correlations.</li>
+    <li>Validate on representative dVRK motion ranges and explore regime-dependent tuning.</li>
   </ul>
 
   <h2>Links</h2>
@@ -137,6 +170,9 @@
     <li><a href="../index.html">Portfolio Home</a></li>
     <li><a href="https://www.linkedin.com/in/yu-chieh-lee0110/">LinkedIn</a></li>
     <li><a href="mailto:jaylee88095598@gmail.com">Email</a></li>
+    <!-- Add a PDF link here after you upload the report into your repo, e.g.:
+    <li><a href="../assets/dvrk_velocity_estimation_report.pdf">Full report (PDF)</a></li>
+    -->
   </ul>
 
 </body>
