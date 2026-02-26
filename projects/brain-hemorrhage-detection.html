@@ -15,7 +15,12 @@
     }
 
     h1 { font-size: 2.2rem; margin-bottom: 0; }
-    h2 { border-bottom: 1px solid #ddd; padding-bottom: 6px; margin-top: 40px; }
+
+    h2 {
+      border-bottom: 1px solid #ddd;
+      padding-bottom: 6px;
+      margin-top: 40px;
+    }
 
     .subtitle {
       color: #666;
@@ -64,72 +69,86 @@
 
   <h2>Overview</h2>
   <p>
-    This project focuses on developing a computer vision pipeline to automatically detect 
-    and localize intracranial hemorrhage from non-contrast head CT scans. Rapid identification 
-    of hemorrhage type and location is critical for emergency diagnosis and treatment planning.
+    This project aims to develop a computer vision pipeline for automated detection 
+    of intracranial hemorrhage from non-contrast head CT scans. Rapid and reliable 
+    identification of hemorrhage is critical for emergency diagnosis and treatment planning.
   </p>
 
   <p>
-    The goal is to build a model capable of classifying hemorrhagic vs. normal CT slices, 
-    with future extensions toward anatomical localization and volume estimation.
+    The primary objective is binary classification (hemorrhagic vs. normal CT slices),
+    with longer-term goals of supporting localization and clinically meaningful outputs
+    such as anatomical region and estimated bleed volume.
   </p>
 
   <h2>Dataset</h2>
+
   <div class="card">
     <ul>
       <li>Kaggle Brain CT Hemorrhage Dataset</li>
       <li>6,772 CT slices (2,667 hemorrhagic / 4,105 normal)</li>
-      <li>512 × 512 grayscale images</li>
-      <li>Binary classification (Normal vs Hemorrhagic)</li>
+      <li>512 × 512 resolution grayscale images</li>
+      <li>Supervised binary classification task</li>
     </ul>
   </div>
 
-  <h2>Technical Approach</h2>
+  <h2>Candidate Approaches</h2>
+
+  <p>
+    We are currently evaluating several candidate model families.
+    The final architecture will be selected based on validation performance,
+    robustness, and computational constraints.
+  </p>
 
   <div class="card">
-    <strong>Convolutional Neural Networks (CNN)</strong>
+    <strong>Baseline CNN</strong>
     <ul>
-      <li>Baseline CNN architecture trained from scratch.</li>
-      <li>Feature extraction of hyperdense hemorrhagic regions.</li>
+      <li>Compact convolutional network trained from scratch.</li>
+      <li>Establish preprocessing, augmentation, and evaluation protocol.</li>
+      <li>Provide a performance reference point for deeper models.</li>
     </ul>
   </div>
 
   <div class="card">
-    <strong>ResNet</strong>
+    <strong>Transfer Learning (e.g., ResNet / DenseNet)</strong>
     <ul>
-      <li>Exploring residual connections to improve gradient flow.</li>
-      <li>Transfer learning for improved generalization.</li>
+      <li>Evaluate pretrained backbones adapted to CT slice classification.</li>
+      <li>Compare performance vs. model complexity and training stability.</li>
     </ul>
   </div>
 
   <div class="card">
-    <strong>DenseNet</strong>
+    <strong>Future Extensions</strong>
     <ul>
-      <li>Dense connectivity for improved feature reuse.</li>
-      <li>Evaluating parameter efficiency vs. performance.</li>
+      <li>Localization via saliency maps or Grad-CAM.</li>
+      <li>Segmentation-based methods for anatomical region identification.</li>
+      <li>Estimation of hemorrhage volume for clinical relevance.</li>
     </ul>
   </div>
 
-  <h2>Current Progress</h2>
+  <h2>Current Status</h2>
+
   <ul>
-    <li>Dataset exploration and preprocessing pipeline established.</li>
-    <li>Baseline CNN architecture under development.</li>
-    <li>Initial training experiments using Google Colab GPU.</li>
+    <li>Literature review and dataset exploration completed.</li>
+    <li>Data preprocessing and train/validation/test split under development.</li>
+    <li>Baseline experiments beginning; model selection is ongoing.</li>
   </ul>
 
   <h2>Tools & Resources</h2>
+
   <ul>
     <li>Python</li>
-    <li>PyTorch / TensorFlow (depending on final selection)</li>
+    <li>PyTorch / TensorFlow (architecture selection in progress)</li>
     <li>Google Colab (GPU acceleration)</li>
   </ul>
 
-  <h2>Next Steps</h2>
-  <ul>
-    <li>Hyperparameter tuning and performance evaluation.</li>
-    <li>Model comparison (CNN vs ResNet vs DenseNet).</li>
-    <li>Expand from classification toward localization and volume estimation.</li>
-  </ul>
+  <h2>Project Motivation</h2>
+
+  <p>
+    While acute hemorrhages are often visually apparent, subacute and subtle cases
+    can be difficult to detect due to low contrast between isodense blood and
+    surrounding brain tissue. This project explores how deep learning methods
+    can assist clinicians by standardizing detection and reducing diagnostic delay.
+  </p>
 
 </body>
 </html>
