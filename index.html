@@ -167,21 +167,20 @@
   </div>
   <div class="card">
     <h3>
-      Autonomous Wall-Following & Ball-Sorting Robot (TI C2000 – F28379D)
+      Autonomous Wall-Following & Ball-Sorting Robot (TI C2000 + Raspberry Pi)
       <span class="badge completed">Completed</span>
     </h3>
     <p>
-      Designed and implemented an autonomous mobile robot using the
-      TI LaunchXL-F28379D (C2000) MCU in embedded C. The robot
-      performed right-wall following with inner/outer loop control,
-      detected colored golf balls (pink/purple), collected them,
-      and sorted them into designated compartments before navigating
-      to a final stop location.
+      Designed and implemented an autonomous maze robot using a dual-board
+      architecture: a TI LaunchXL-F28379D (C2000) MCU for real-time motor
+      control and a Raspberry Pi for camera interfacing and color-based
+      object detection.
     </p>
     <p>
-      Integrated PWM motor control, encoder feedback, IR/LIDAR sensing,
-      and vision-based color detection. Extensive debugging and real-time
-      tuning were performed using Code Composer Studio.
+      Implemented right-wall following using PID-based speed and steering
+      control with encoder feedback. Integrated camera calibration and
+      color classification (pink/purple golf balls) to trigger pickup and
+      sorting behaviors before navigating to a final stop location.
     </p>
     <p>
       <a href="projects/mechatronics-robot.html">Project details →</a>
