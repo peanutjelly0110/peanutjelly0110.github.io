@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Fuzzy-Controlled Pneumatic Height Regulation | Jay Lee</title>
+
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+      margin: 60px auto;
+      max-width: 900px;
+      line-height: 1.7;
+      color: #222;
+    }
+
+    h1 { font-size: 2.2rem; margin-bottom: 0; }
+    .subtitle { color: #666; margin-top: 6px; margin-bottom: 22px; }
+    h2 { border-bottom: 1px solid #ddd; padding-bottom: 6px; margin-top: 42px; }
+
+    .card {
+      border: 1px solid #e5e5e5;
+      border-radius: 10px;
+      padding: 18px 20px;
+      margin-top: 16px;
+    }
+
+    .back { margin-bottom: 18px; display: inline-block; }
+  </style>
+</head>
+
+<body>
+
+<a class="back" href="../index.html">← Back to Home</a>
+
+<h1>Fuzzy-Controlled Pneumatic Height Regulation System</h1>
+
+<div class="subtitle">
+Nonlinear Control • Fuzzy Logic • Pneumatic Actuation • Embedded Implementation
+</div>
+
+<h2>Project Context (NDA)</h2>
+
+<p>
+As part of an industry-sponsored design project (details protected under NDA),
+I contributed to the development of a control system responsible for regulating
+the height of an agricultural row-cleaning mechanism.
+</p>
+
+<p>
+The system adjusted pneumatic air pressure in real time to maintain
+a desired operating height under varying terrain and field conditions.
+</p>
+
+<h2>Technical Challenge</h2>
+
+<p>
+The mechanical system exhibited nonlinear behavior due to:
+</p>
+
+<ul>
+  <li>Pneumatic actuator dynamics</li>
+  <li>Variable ground interaction forces</li>
+  <li>Changing operating speeds</li>
+  <li>Uncertain environmental disturbances</li>
+</ul>
+
+<p>
+A traditional linear PID controller struggled to handle these nonlinearities
+robustly across all operating regimes.
+</p>
+
+<h2>Control Strategy</h2>
+
+<div class="card">
+<strong>Fuzzy Logic Controller</strong>
+
+<p>
+We implemented a rule-based fuzzy controller that mapped height error
+and error rate to air-pressure adjustments.
+</p>
+
+<ul>
+  <li>Defined linguistic variables (e.g., Negative Large, Zero, Positive Small)</li>
+  <li>Designed membership functions</li>
+  <li>Constructed inference rules based on system behavior</li>
+  <li>Tuned rule weights for stability and responsiveness</li>
+</ul>
+
+</div>
+
+<h2>Why Fuzzy Control?</h2>
+
+<p>
+Fuzzy logic was selected because it:
+</p>
+
+<ul>
+  <li>Handles nonlinear dynamics without requiring an exact mathematical model</li>
+  <li>Incorporates engineering intuition into rule design</li>
+  <li>Provides smoother transitions across operating regions</li>
+  <li>Improves robustness under uncertain disturbances</li>
+</ul>
+
+<h2>My Contributions</h2>
+
+<ul>
+  <li>Developed the fuzzy rule base and membership functions</li>
+  <li>Analyzed system response and iteratively tuned controller behavior</li>
+  <li>Evaluated control performance under varying simulated conditions</li>
+  <li>Compared fuzzy control behavior against conventional approaches</li>
+</ul>
+
+<h2>What I Learned</h2>
+
+<ul>
+  <li>How to design controllers for nonlinear pneumatic systems</li>
+  <li>The strengths and limitations of fuzzy control vs. classical PID</li>
+  <li>How to translate qualitative engineering intuition into structured control rules</li>
+  <li>How real-world disturbances affect actuator-based control systems</li>
+</ul>
+
+<h2>Key Takeaway</h2>
+
+<p>
+This project strengthened my understanding of nonlinear control design,
+especially when exact system models are difficult to obtain.
+It also demonstrated the value of combining theoretical control knowledge
+with practical system behavior analysis.
+</p>
+
+</body>
+</html>
