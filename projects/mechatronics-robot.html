@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Mechatronics Robot Project | Jay Lee</title>
+
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+      margin: 60px auto;
+      max-width: 900px;
+      line-height: 1.7;
+      color: #222;
+    }
+    h1 { font-size: 2.2rem; margin-bottom: 0; }
+    .subtitle { color: #666; margin-top: 6px; margin-bottom: 22px; }
+    h2 { border-bottom: 1px solid #ddd; padding-bottom: 6px; margin-top: 42px; }
+    .tagrow span {
+      display: inline-block;
+      border: 1px solid #e5e5e5;
+      border-radius: 999px;
+      padding: 6px 10px;
+      margin: 6px 8px 0 0;
+      font-size: 0.95rem;
+      color: #333;
+      background: #fafafa;
+    }
+    .card {
+      border: 1px solid #e5e5e5;
+      border-radius: 10px;
+      padding: 18px 20px;
+      margin-top: 16px;
+    }
+    a { color: #0056b3; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    ul { margin-top: 8px; }
+    .muted { color: #666; }
+    .back { margin-bottom: 18px; display: inline-block; }
+    pre { background: #fafafa; border: 1px solid #eee; border-radius: 8px; padding: 12px 14px; overflow-x: auto; }
+  </style>
+</head>
+
+<body>
+
+  <a class="back" href="../index.html">← Back to Home</a>
+
+  <h1>Autonomous Wall-Following & Ball-Sorting Robot (TI C2000 + Raspberry Pi)</h1>
+  <div class="subtitle">
+    Embedded C • Real-Time Motor Control • Sensor Integration • Autonomous Behaviors • Debugging & Tuning
+  </div>
+
+  <div class="tagrow">
+    <span>Mechatronics</span>
+    <span>Embedded C</span>
+    <span>PID Control</span>
+    <span>Systems Integration</span>
+    <span>Autonomy</span>
+  </div>
+
+  <h2>Overview</h2>
+  <p>
+    As part of a UIUC mechatronics semester project, my team built an autonomous mobile robot
+    that navigated a maze while hugging the right wall. The robot detected colored golf balls
+    (pink and purple), collected them, stored them in separate compartments, and performed a final
+    sorting/drop-off behavior at the end of the course.
+  </p>
+
+  <div class="card">
+    <strong>Core behaviors</strong>
+    <ul>
+      <li>Right-wall following (“hug the wall”) navigation through a maze</li>
+      <li>Color-based object detection for two classes (pink vs. purple)</li>
+      <li>Ball pickup and storage in left/right compartments based on color</li>
+      <li>Final sorting/drop-off routine and stop at a designated location</li>
+    </ul>
+  </div>
+
+  <h2>System Architecture</h2>
+  <p>
+    The robot used a dual-board architecture:
+  </p>
+  <ul>
+    <li>
+      <strong>TI LaunchXL-F28379D (C2000 MCU):</strong> real-time motor control, PWM generation, encoder feedback,
+      interrupts/timers, and low-level control loops in embedded C.
+    </li>
+    <li>
+      <strong>Raspberry Pi:</strong> higher-level logic and sensor integration (e.g., perception/decision logic and coordination
+      of behaviors).
+    </li>
+  </ul>
+
+  <div class="card">
+    <strong>External localization (monitoring)</strong>
+    <p>
+      Reflective marker balls mounted on the robot were tracked by the lab motion-capture system.
+      This provided an external estimate of robot pose (position/orientation) for monitoring and evaluation,
+      not for closed-loop control.
+    </p>
+  </div>
+
+  <h2>Controls</h2>
+  <div class="card">
+    <strong>Wall-following control strategy</strong>
+    <ul>
+      <li>Implemented PID-based speed/steering behavior to maintain a desired right-wall distance.</li>
+      <li>Used encoder feedback for speed estimation and consistent motion control.</li>
+      <li>Tuned gains empirically to balance stability (no oscillation) and responsiveness (tight turns).</li>
+    </ul>
+    <p class="muted">
+      Key engineering trade-off: aggressive gains improved cornering but increased oscillation and wheel slip;
+      conservative gains were stable but slower to correct wall-distance errors.
+    </p>
+  </div>
+
+  <h2>Sensing & Perception</h2>
+  <div class="card">
+    <strong>Distance sensing</strong>
+    <ul>
+      <li>Used distance measurements to support right-wall following and obstacle proximity handling.</li>
+      <li>Validated sensor readings in the maze and handled noisy measurements via filtering/tuning.</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <strong>Color-based object detection</strong>
+    <ul>
+      <li>Detected pink vs. purple golf balls and triggered pickup behavior when a target was observed.</li>
+      <li>Mapped detection outcomes to behavior decisions (pick up + store left/right based on color).</li>
+    </ul>
+  </div>
+
+  <h2>Autonomy & State Machine</h2>
+  <p>
+    The overall behavior was implemented as a finite-state machine (FSM), for example:
+  </p>
+
+  <pre><code>Wall-Follow  →  Detect Ball  →  Approach/Pickup  →  Store (Left/Right)
+      ↘_______________________________________________↗
+                 Final Sorting / Drop-off → Stop</code></pre>
+
+  <h2>Debugging & What I Enjoyed</h2>
+  <ul>
+    <li>Real-time debugging of embedded C code (timing issues, interrupts, sensor noise).</li>
+    <li>Tuning PID and steering logic in a real maze environment with physical constraints.</li>
+    <li>Integrating multiple subsystems until the full end-to-end behavior worked reliably.</li>
+  </ul>
+
+  <h2>What I learned</h2>
+  <ul>
+    <li>How to split responsibilities between real-time control (MCU) and higher-level autonomy (Linux SBC).</li>
+    <li>How sensor noise and timing affect control performance in physical systems.</li>
+    <li>How to build robust robotics behavior using state machines and incremental testing.</li>
+  </ul>
+
+  <h2>Links</h2>
+  <ul>
+    <li><a href="../index.html">Portfolio Home</a></li>
+    <li><a href="https://www.linkedin.com/in/yu-chieh-lee0110/">LinkedIn</a></li>
+    <li><a href="mailto:jaylee88095598@gmail.com">Email</a></li>
+  </ul>
+
+</body>
+</html>
