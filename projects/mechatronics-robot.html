@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Mechatronics Robot Project | Jay Lee</title>
+  <title>Autonomous Mechatronics Robot | Jay Lee</title>
 
   <style>
     body {
@@ -13,9 +13,11 @@
       line-height: 1.7;
       color: #222;
     }
+
     h1 { font-size: 2.2rem; margin-bottom: 0; }
     .subtitle { color: #666; margin-top: 6px; margin-bottom: 22px; }
     h2 { border-bottom: 1px solid #ddd; padding-bottom: 6px; margin-top: 42px; }
+
     .tagrow span {
       display: inline-block;
       border: 1px solid #e5e5e5;
@@ -23,143 +25,184 @@
       padding: 6px 10px;
       margin: 6px 8px 0 0;
       font-size: 0.95rem;
-      color: #333;
       background: #fafafa;
     }
+
     .card {
       border: 1px solid #e5e5e5;
       border-radius: 10px;
       padding: 18px 20px;
       margin-top: 16px;
     }
+
     a { color: #0056b3; text-decoration: none; }
     a:hover { text-decoration: underline; }
-    ul { margin-top: 8px; }
-    .muted { color: #666; }
+
     .back { margin-bottom: 18px; display: inline-block; }
-    pre { background: #fafafa; border: 1px solid #eee; border-radius: 8px; padding: 12px 14px; overflow-x: auto; }
+
+    pre {
+      background: #fafafa;
+      border: 1px solid #eee;
+      border-radius: 8px;
+      padding: 12px 14px;
+      overflow-x: auto;
+    }
+
+    .muted { color: #666; }
   </style>
 </head>
 
 <body>
 
-  <a class="back" href="../index.html">← Back to Home</a>
+<a class="back" href="../index.html">← Back to Home</a>
 
-  <h1>Autonomous Wall-Following & Ball-Sorting Robot (TI C2000 + Raspberry Pi)</h1>
-  <div class="subtitle">
-    Embedded C • Real-Time Motor Control • Sensor Integration • Autonomous Behaviors • Debugging & Tuning
-  </div>
+<h1>Autonomous Wall-Following & Ball-Sorting Robot</h1>
 
-  <div class="tagrow">
-    <span>Mechatronics</span>
-    <span>Embedded C</span>
-    <span>PID Control</span>
-    <span>Systems Integration</span>
-    <span>Autonomy</span>
-  </div>
+<div class="subtitle">
+Embedded C (C2000) • Raspberry Pi • PID Control • Camera Calibration • Autonomous Behavior
+</div>
 
-  <h2>Overview</h2>
-  <p>
-    As part of a UIUC mechatronics semester project, my team built an autonomous mobile robot
-    that navigated a maze while hugging the right wall. The robot detected colored golf balls
-    (pink and purple), collected them, stored them in separate compartments, and performed a final
-    sorting/drop-off behavior at the end of the course.
-  </p>
+<div class="tagrow">
+  <span>Mechatronics</span>
+  <span>Embedded Systems</span>
+  <span>PID Control</span>
+  <span>Sensor Integration</span>
+  <span>State Machines</span>
+</div>
 
-  <div class="card">
-    <strong>Core behaviors</strong>
-    <ul>
-      <li>Right-wall following (“hug the wall”) navigation through a maze</li>
-      <li>Color-based object detection for two classes (pink vs. purple)</li>
-      <li>Ball pickup and storage in left/right compartments based on color</li>
-      <li>Final sorting/drop-off routine and stop at a designated location</li>
-    </ul>
-  </div>
+<h2>Project Overview</h2>
 
-  <h2>System Architecture</h2>
-  <p>
-    The robot used a dual-board architecture:
-  </p>
-  <ul>
-    <li>
-      <strong>TI LaunchXL-F28379D (C2000 MCU):</strong> real-time motor control, PWM generation, encoder feedback,
-      interrupts/timers, and low-level control loops in embedded C.
-    </li>
-    <li>
-      <strong>Raspberry Pi:</strong> higher-level logic and sensor integration (e.g., perception/decision logic and coordination
-      of behaviors).
-    </li>
-  </ul>
+<p>
+As part of SE423 – Introduction to Mechatronics at UIUC, our team built an autonomous mobile robot 
+capable of navigating a maze while hugging the right wall. The robot detected colored golf balls 
+(pink and purple), collected them, stored them in separate compartments, and executed a final 
+sorting and stop routine at a designated location.
+</p>
 
-  <div class="card">
-    <strong>External localization (monitoring)</strong>
-    <p>
-      Reflective marker balls mounted on the robot were tracked by the lab motion-capture system.
-      This provided an external estimate of robot pose (position/orientation) for monitoring and evaluation,
-      not for closed-loop control.
-    </p>
-  </div>
+<p>
+The system used a dual-board architecture:
+</p>
 
-  <h2>Controls</h2>
-  <div class="card">
-    <strong>Wall-following control strategy</strong>
-    <ul>
-      <li>Implemented PID-based speed/steering behavior to maintain a desired right-wall distance.</li>
-      <li>Used encoder feedback for speed estimation and consistent motion control.</li>
-      <li>Tuned gains empirically to balance stability (no oscillation) and responsiveness (tight turns).</li>
-    </ul>
-    <p class="muted">
-      Key engineering trade-off: aggressive gains improved cornering but increased oscillation and wheel slip;
-      conservative gains were stable but slower to correct wall-distance errors.
-    </p>
-  </div>
+<ul>
+  <li><strong>TI LaunchXL-F28379D (C2000 MCU)</strong> for real-time motor control and feedback loops</li>
+  <li><strong>Raspberry Pi</strong> for camera interfacing, color calibration, and classification</li>
+</ul>
 
-  <h2>Sensing & Perception</h2>
-  <div class="card">
-    <strong>Distance sensing</strong>
-    <ul>
-      <li>Used distance measurements to support right-wall following and obstacle proximity handling.</li>
-      <li>Validated sensor readings in the maze and handled noisy measurements via filtering/tuning.</li>
-    </ul>
-  </div>
+---
 
-  <div class="card">
-    <strong>Color-based object detection</strong>
-    <ul>
-      <li>Detected pink vs. purple golf balls and triggered pickup behavior when a target was observed.</li>
-      <li>Mapped detection outcomes to behavior decisions (pick up + store left/right based on color).</li>
-    </ul>
-  </div>
+<h2>System Architecture</h2>
 
-  <h2>Autonomy & State Machine</h2>
-  <p>
-    The overall behavior was implemented as a finite-state machine (FSM), for example:
-  </p>
+<div class="card">
+<strong>Real-Time Control (C2000 – Embedded C)</strong>
+<ul>
+  <li>PWM motor control using hardware timers</li>
+  <li>Encoder-based velocity feedback</li>
+  <li>PID-based speed and steering control</li>
+  <li>Interrupt-driven control loops</li>
+</ul>
+<p class="muted">
+The C2000 handled all time-critical tasks to ensure deterministic motor behavior.
+</p>
+</div>
 
-  <pre><code>Wall-Follow  →  Detect Ball  →  Approach/Pickup  →  Store (Left/Right)
-      ↘_______________________________________________↗
-                 Final Sorting / Drop-off → Stop</code></pre>
+<div class="card">
+<strong>Perception & Camera Processing (Raspberry Pi)</strong>
+<ul>
+  <li>Camera calibration for color recognition</li>
+  <li>Color classification (pink vs. purple golf balls)</li>
+  <li>Triggered pickup behavior based on classification</li>
+</ul>
+<p class="muted">
+The Raspberry Pi was used because camera processing and calibration are better suited
+for a Linux-based system than a real-time MCU.
+</p>
+</div>
 
-  <h2>Debugging & What I Enjoyed</h2>
-  <ul>
-    <li>Real-time debugging of embedded C code (timing issues, interrupts, sensor noise).</li>
-    <li>Tuning PID and steering logic in a real maze environment with physical constraints.</li>
-    <li>Integrating multiple subsystems until the full end-to-end behavior worked reliably.</li>
-  </ul>
+---
 
-  <h2>What I learned</h2>
-  <ul>
-    <li>How to split responsibilities between real-time control (MCU) and higher-level autonomy (Linux SBC).</li>
-    <li>How sensor noise and timing affect control performance in physical systems.</li>
-    <li>How to build robust robotics behavior using state machines and incremental testing.</li>
-  </ul>
+<h2>Control Strategy</h2>
 
-  <h2>Links</h2>
-  <ul>
-    <li><a href="../index.html">Portfolio Home</a></li>
-    <li><a href="https://www.linkedin.com/in/yu-chieh-lee0110/">LinkedIn</a></li>
-    <li><a href="mailto:jaylee88095598@gmail.com">Email</a></li>
-  </ul>
+<div class="card">
+<strong>Right-Wall Following</strong>
+<ul>
+  <li>Maintained desired wall distance using distance sensor feedback</li>
+  <li>Steering corrections applied through PID control</li>
+  <li>Speed regulation via encoder-based feedback</li>
+</ul>
+</div>
+
+<p>
+A key engineering challenge was tuning PID gains to balance responsiveness 
+(tight corners) with stability (avoiding oscillations or wheel slip).
+</p>
+
+---
+
+<h2>Autonomous Behavior (State Machine)</h2>
+
+<p>
+The robot behavior was implemented as a finite-state machine:
+</p>
+
+<pre>
+Wall-Follow → Detect Ball → Approach & Pickup → Store (Left/Right)
+        ↘___________________________________________↗
+                   Final Sorting → Stop
+</pre>
+
+<p>
+Each state was tested independently before integrating the full autonomous sequence.
+</p>
+
+---
+
+<h2>Localization & Monitoring</h2>
+
+<div class="card">
+<strong>Motion Capture Tracking</strong>
+<p>
+Reflective marker balls mounted on the robot allowed the lab motion-capture system
+to track its position in the global coordinate frame. This was used for monitoring
+and evaluation, not for low-level control.
+</p>
+</div>
+
+<p>
+Course material also introduced Kalman filtering to combine dead-reckoning
+and motion-capture data for improved pose estimation in robotics systems.
+</p>
+
+---
+
+<h2>What I Learned</h2>
+
+<ul>
+  <li>How to partition a robotics system between real-time control and high-level processing</li>
+  <li>Practical PID tuning under real-world mechanical constraints</li>
+  <li>How sensor noise and timing affect closed-loop performance</li>
+  <li>How to debug embedded C systems using interrupts and hardware registers</li>
+  <li>How to integrate perception, control, and behavior into a complete autonomous robot</li>
+</ul>
+
+---
+
+<h2>Key Takeaway</h2>
+
+<p>
+This project strengthened my ability to design, implement, and debug
+full-stack robotic systems — from low-level embedded motor control to
+high-level perception and autonomous decision logic.
+</p>
+
+---
+
+<h2>Links</h2>
+
+<ul>
+  <li><a href="../index.html">Portfolio Home</a></li>
+  <li><a href="mailto:jaylee88095598@gmail.com">Email</a></li>
+  <li><a href="https://www.linkedin.com/in/yu-chieh-lee0110/">LinkedIn</a></li>
+</ul>
 
 </body>
 </html>
